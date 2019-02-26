@@ -172,22 +172,70 @@ import os
 # q.rotate(3)         # 将列表后n项移动到左侧[0, 1, 2, 3, 4, 5] --> [5, 4, 3, 0, 1, 2]
 # print(q)
 
-import time
+# ****************************** time ********************************
+# import time
 
 # time.asctime()    将时间元组转换为字符串, 默认为当前时间    Fri Feb 22 17:40:51 2019
-# print(time.asctime() + '')
+# print('time.asctime(): ' + time.asctime(time.localtime(3600)) + '')
 # print(time.asctime(time.localtime()))
 # time.localtime()  将秒数转化为日期元组，以本地时间为准  time.struct_time(tm_year=2019, tm_mon=2, tm_mday=22, tm_hour=17, tm_min=40, tm_sec=22, tm_wday=4, tm_yday=53, tm_isdst=0)
 # print(time.localtime(time.time()))
-# time.mktime()     将时间元组转换为本地时间
+# time.mktime()     将时间元组转换为本地时间(秒)
 # print(time.mktime(time.localtime()))
 # time.sleep()      休眠
-# time.strftime()   将字符串解析为时间元组
-# print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-time_str = time.strftime("%Y-%m-%d", time.localtime())
-print(time.mktime(time.strptime(time_str, "%Y-%m-%d")))
+# time.strftime()   将时间元组解析为字符串
+# print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + '')
+
+# 将时间字符串转为日期元组
+# time_str = '1970-01-01 09:00:00'
+# time_tuple = time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+# 将时间字符串转为本地时间（秒）
+# print(time.mktime(time.strptime('1970-01-01 09:00:00', "%Y-%m-%d %H:%M:%S")))
 
 # a = "Sat Mar 28 22:24:24 2016"
 # print(time.strptime(a,"%a %b %d %H:%M:%S %Y"))
 # print(time.mktime(time.strptime(a,"%a %b %d %H:%M:%S %Y")))
 # time.time()       当前时间
+
+# ******************************* random ***************************************
+from random import *
+from time import *
+
+# print(random())                  # 返回0到1之间的伪随机数
+# print(getrandbits(10))
+# print(uniform(1, 5))             # 返回随机数n，其中1<=n<5
+# print(randrange(1, 20, 2))       # 返回小于20的正奇数
+# print(choice([1,2,3,4,5,6,'a','b','c','d']))    # 从给定序列中选择随机元素
+# a = [1,2,3,4,5]
+# shuffle(a)
+# print(a)                                # 将给定的序列随机排序，每种排列可能性都是近似相等的
+# print(sample([1,2,3,4,5], 2))    # 从给定序列中随机选择出n个
+
+# random示例1. 随机打印2008-2018年之间的日期（-1表示一周中的某一天，一年中的某一天，一年中的某天和夏令时）
+# date1 = (2008, 1, 1, 0, 0, 0, -1, -1, -1)
+# date2 = (2018, 1, 1, 0, 0, 0, -1, -1, -1)
+# time1 = mktime(date1)
+# time2 = mktime(date2)
+# print(strftime("%Y-%m-%d %H:%M:%S", localtime(uniform(time1, time2))))
+
+# 掷筛子
+# num = int(input("How many dice?"))
+# sides = int(input("How many sides per die?"))
+# sum = 0
+# for i in range(num):
+#     sum += randrange(sides) + 1
+# print("the result is ", sum)
+
+# 从输入的文件中随机选择一行内容
+# import random, fileinput
+#
+# fortunes = list(fileinput.input())
+# print(random.choice(fortunes))
+
+# 洗牌
+values = list(range(1, 11)) + 'Jack Queen King'.split()
+suits = "spades hearts clubs diamonds".split()
+deck = ['%s of %s' % (v, s) for v in values for s in suits]
+deck.extend(['tetrarch', 'king'])
+shuffle(deck)
+pprint.pprint(deck[:12])
