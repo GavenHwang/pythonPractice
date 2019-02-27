@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import pprint
-import sys
 
 # ********************* SYS ***************************
+import sys
 # sys.argv 表示外部调用当前脚本时的参数
 # eg. D:\test.py a b c
 # sys.argv的值为['D:\\test.py', 'a', 'b', 'c'],第一个参数为当前脚本，之后是参
@@ -29,6 +28,7 @@ import sys
 # print(sys.modules.values())
 
 # sys.path 输出系统模块路径
+# import pprint
 # pprint.pprint(sys.path)
 # print(sys.path)
 
@@ -199,10 +199,24 @@ import os
 
 # ******************************* random ***************************************
 from random import *
-from time import *
+# from time import *
 
 # print(random())                  # 返回0到1之间的伪随机数
-# print(getrandbits(10))
+
+# print(getrandbits(3))            # 以长整型的形式返回n个随机位
+# 8 bit = 1 Byte，不管它们都是全是0、全是1或者是由若干0和若干1混合而成。
+# eg: getrandbits(2),表示返回两位bit数，即 00 ~ 11，即，0,1,2,3
+# getrandbits(3),表示返回两位bit数，即 00 ~ 111，即，0,1,2,3,4,5,6,7
+# 原理如下：
+# import random
+# from os import urandom
+# from math import ceil
+# k = 2
+# a = ceil(k/8)
+# b = int.from_bytes(urandom(a), 'big')
+# c = b >> (a*8 - k)
+# print(c)
+
 # print(uniform(1, 5))             # 返回随机数n，其中1<=n<5
 # print(randrange(1, 20, 2))       # 返回小于20的正奇数
 # print(choice([1,2,3,4,5,6,'a','b','c','d']))    # 从给定序列中选择随机元素
@@ -233,9 +247,48 @@ from time import *
 # print(random.choice(fortunes))
 
 # 洗牌
-values = list(range(1, 11)) + 'Jack Queen King'.split()
-suits = "spades hearts clubs diamonds".split()
-deck = ['%s of %s' % (v, s) for v in values for s in suits]
-deck.extend(['tetrarch', 'king'])
-shuffle(deck)
-pprint.pprint(deck[:12])
+# from random import *
+#
+# values = list(range(1, 11)) + 'Jack Queen King'.split()
+# suits = "spades hearts clubs diamonds".split()
+# deck = ['%s of %s' % (v, s) for v in values for s in suits]
+# deck.extend(['tetrarch', 'king'])
+# shuffle(deck)
+# while deck:
+#     ignore = input(deck.pop())
+
+# *************************** shelve ********************************
+# import shelve
+
+# writeback为true时，会将改动放在缓存，在close时才真正写入到磁盘
+# s = shelve.open(r'D:\Users\Gaven\PycharmProjects\pythonPractice\a.txt', writeback=True)
+# s['x'] = [1, 2, 3]
+# # s['x'].append(4)
+# temp = s['x']
+# temp.append(4)
+# s['x'] = temp
+# print(s['x'])
+# s.close()
+
+# import database
+#
+# database.main()
+
+
+# ******************************** re ********************************
+import re
+
+str = 'abc python.org def'
+# r = 'python\\.org'      # \\表示一个\, \. 表示 .
+r = r'python\.org'      # 与上面效果相同
+print(re.search(r, str).span())
+
+# . 号只能匹配一个任意字符（不包括换行符），'.'号转义需要'\\.'
+# [a-zA-Z0-9] 表示任意一个字母或者数字，[^abc]表示除了‘abc’之外的任意一个字符
+# 为了避免使用转义符号，^不应该出现在首字母，]和- 应该放在字符集的开头，否则必须用\进行转义
+def get_a_responsible(self, purchase_id):
+    if purchase_id.state not in ('draft', 'to_approve', 'refuse', 'cancel'):
+        line_id = self.pool.get('emabc.base.wkf.task').search(self.cr, self.uid,
+                                                              [('approval_document', '=', 'purchase.order,' + str(purchase_id.id))],
+                                                              order='approve_date desc', limit=1)
+        return self.pool.get('emabc.base.wkf.task').browse(self.cr, self.uid, line_id).approver_id.name
