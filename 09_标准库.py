@@ -80,7 +80,7 @@ import os
 # fileinput.filelineno()      # 当前文件的行数
 # fileinput.isfirstline()     # 是否是第一行
 # fileinput.isstdin()         # 最后一行是否来自sys.stdin
-# fileinput.nextfile()        # 关闭当前文件，移动到下一个文件
+# fileinput.nextfile()        # 关闭当前文件，移动到下一个文件 if fileinput.isstdin(): fileinput.nextfile()
 # fileinput.close()           # 关闭序列
 
 
@@ -278,17 +278,115 @@ from random import *
 # ******************************** re ********************************
 import re
 
-str = 'abc python.org def'
-# r = 'python\\.org'      # \\表示一个\, \. 表示 .
-r = r'python\.org'      # 与上面效果相同
-print(re.search(r, str).span())
-
+# 通配符、转义、字符集
 # . 号只能匹配一个任意字符（不包括换行符），'.'号转义需要'\\.'
 # [a-zA-Z0-9] 表示任意一个字母或者数字，[^abc]表示除了‘abc’之外的任意一个字符
 # 为了避免使用转义符号，^不应该出现在首字母，]和- 应该放在字符集的开头，否则必须用\进行转义
-def get_a_responsible(self, purchase_id):
-    if purchase_id.state not in ('draft', 'to_approve', 'refuse', 'cancel'):
-        line_id = self.pool.get('emabc.base.wkf.task').search(self.cr, self.uid,
-                                                              [('approval_document', '=', 'purchase.order,' + str(purchase_id.id))],
-                                                              order='approve_date desc', limit=1)
-        return self.pool.get('emabc.base.wkf.task').browse(self.cr, self.uid, line_id).approver_id.name
+# str = 'abc python.org def'
+# r = 'python\\.org'      # \\表示一个\, \. 表示 .
+# r = r'python\.org'      # 与上面效果相同
+# print(re.findall(r, str))
+
+# 选择符和子模式
+# str = 'python&perl'
+# r = '(ython|perl)'
+# print(re.findall(r, str))
+
+# 可选项和重复子模式
+# r = r'(http://)?(www\.)?python\.org'
+# (pattern)?        :允许出现一次或者根本不出现
+# (pattern)*        :允许出现0次或者多次
+# (pattern)+        :允许出现一次或者多次
+# (pattern){m,n}    :允许出现m~n次或者根本不出现
+
+# 字符串的开始和结尾
+# ^ 表示字符串开始 $ 表示字符串结尾
+# str1 = 'http://www.baidu.com'
+# str2 = 'www.http://baidu.com'
+# r = r'^http.*'
+# print(re.findall(r, str1))
+# print(re.findall(r, str2))
+
+# str = 'aaapython&pearlbbb'
+# r = r'p(ython|earl)'
+# p = re.compile(r)
+# print(p.findall(str))
+# print(re.match(r, str))
+# compile   :將正则表达式转为模式对象
+# search    :寻找第一个匹配到的子字符串
+# match     :从字符串开头匹配，如果子字符串不在开头则返回None
+# some_text = 'alpha, beta,,,,,gama delta'    # 'alpha', beta,,,,,gama delta
+# print(re.split(',', some_text))     # ['alpha', 'beta', 'gama', 'delta'] 表示使用任意个','或者任意个' '来分割字符串
+# print(re.split('o(o)', 'fooooobaoor'))    # fooooobaoor--> ['f', 'o', 'ooobaoor'] --> ['f', 'o', '', 'o', 'obaoor'] --> ['f', 'o', '', 'o', 'oba', 'o', 'r']
+# print(re.split('o(o)', 'fooooobaoor', maxsplit=2))  # maxsplit表示最多分割的次数
+
+# print(re.findall('[a]', 'abcabc'))    # 以列表形式返回给定模式的所有匹配项
+# print(re.sub('name', 'Mrs Liu', 'Dear name...'))    # 替換
+
+# print(re.escape('www.python.org'))
+# print(re.escape('But where is the ambiguity?'))     # 将可能被解释为正则运算符的特殊字符转义
+
+# str = 'There (was a (wee) (cooper)) who (lived in Fyfe)'
+# 包含的组：
+# There (was a (wee) (cooper)) who (lived in Fyfe)
+# (was a (wee)
+# (cooper))
+# (wee)
+# (cooper)
+# (lived in Fyfe)
+# m = re.match(r'www\.(.*)\..{3}', 'www.python.org')
+# print(m.group())
+# print(m.start())
+# print(m.end())
+# print(m.span())
+# print('--------------------')
+# print(m.group(1))
+# print(m.start(1))
+# print(m.end(1))
+# print(m.span(1))
+#
+# print(m.groups())
+# print(m.re)
+# print(m.string)
+
+# print(re.compile('hello').groups)   # 返回pattern的组数没有组时为0
+# \*([^\*]+)\*  匹配任意以单个星号开头，以星号结尾的字符
+# emphasis_pattern = re.compile(r'''
+# \*          # Beginning emphasis tag -- an asterisk
+# (           # Begin group for capturing phrase
+# [^\*]+      # Capture anything except asterisks
+# )           # End group
+# \*          # Ending emphasis tag
+# ''', re.VERBOSE)
+# print(emphasis_pattern.groups)
+# print(re.sub(emphasis_pattern, r'<em>\1</em>', 'Hello, *world!* *python!*'))     # 将*world!*和*python*替换为<em>\1</em>    \1表示pattern中的第一个组
+
+# p = r'\*(.+)\*'     # 默认是贪婪模式
+# p = r'\*(.+？)\*'     # 改为非贪婪模式
+# print(re.sub(p, r'<>\1<>', '*hello* *world!*'))
+
+# 找出From Foo File <foo@bar.com>中的Foo File
+# find_sernder.py
+# import fileinput, re
+# pat = re.compile('From (.*) <.*?>$')
+# for line in fileinput.input():
+#     m = pat.match(line)
+#     if m:
+#         print(m.group(1))
+# fileinput.close()
+
+# 找出所有的邮箱
+# import fileinput, re
+# pat = re.compile(r'[a-z\-\.]+@[a-z\-\.]+', re.IGNORECASE)
+# addresses = set()
+# for line in fileinput.input():
+#     for address in pat.findall(line):
+#         addresses.add(address)
+#     if fileinput.isstdin():
+#         fileinput.nextfile()
+# for address in sorted(addresses):
+#     print(address)
+# fileinput.close()
+from string import Template
+
+Template
