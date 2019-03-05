@@ -59,10 +59,79 @@
 # f.write(b'0123456789')
 # f.close()
 
-f = open(r'database.py', 'br')
-lines = f.readlines()
-print(lines)
+# f = open(r'database.py', 'br')
+# lines = f.readlines()
+# print(lines)
+# f.close()
+# w = open(r'hello.py', 'bw+')
+# w.writelines(lines)
+# w.close()
+
+# 对文件内容进行迭代
+# 这个字节迭代
+# f = open(r'hello.py', 'r', encoding='UTF-8')
+# char = f.read(1)
+# while char:
+#     # process(char)
+#     char = f.read(1)
+#     print(char, end='')
+# f.close()
+
+# 优化while循环
+# f = open(r'hello.py', 'r', encoding='UTF-8')
+# while True:
+#     char = f.read(1)
+#     print(char, end='')
+#     if not char:
+#         break
+# f.close()
+
+# 逐行迭代
+# f = open(r'hello.py', 'r', encoding='UTF-8')
+# while True:
+#     line = f.readline()
+#     print(line, end='')
+#     if not line:
+#         break
+# f.close()
+
+# 一次读取整个文件
+# f = open(r'hello.py', 'r', encoding='UTF-8')
+# for v in f.read():
+#     print(v, end='')
+# f.close()
+
+# 惰性迭代
+# import fileinput
+#
+# from pip._vendor import chardet
+#
+# for line in fileinput.input(r'hello.py', mode='rb'):
+#     # 获得编码格式
+#     encoding = chardet.detect(line).get('encoding')
+#     print(line.decode(encoding), end='')
+
+# 文件迭代器
+# f = open(r'hello.py', 'r', encoding='UTF-8')
+# for line in f:
+#     print(line, end='')
+# f.close()
+
+# for line in open(r'hello.py', 'r', encoding='UTF-8'):
+#     print(line, end='')
+
+import sys
+
+# 标准输入也是可以迭代的
+# for line in sys.stdin:
+#     print(line)
+
+f = open(r'test.txt', 'w')
+f.write("hello\n")
+f.write("world\n")
+f.write("python\n")
 f.close()
-w = open(r'hello.py', 'bw+')
-w.writelines(lines)
-w.close()
+lines = list(open('test.txt'))
+print("lines:", lines)
+one, two, three = open('test.txt')
+print(one, two, three, sep='')
