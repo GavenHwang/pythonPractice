@@ -27,12 +27,19 @@
 # def fun_fibs(num):
 #     """输出斐波那契数列的前num项"""
 #     fibs = [0, 1]
-#     for i in range(num - 2):
-#         fibs.append(fibs[-2] + fibs[-1])
+#     if num == 1:
+#         print([0])
+#         return
+#     elif num ==2:
+#         print([0, 1])
+#         return
+#     else:
+#         for i in range(num - 2):
+#             fibs.append(fibs[-2] + fibs[-1])
 #     print(fibs)
-
-
-# fun_fibs(8)
+#
+#
+# fun_fibs(5)
 
 
 # 判断是否可调用
@@ -60,8 +67,8 @@
 # def relist(a):
 #     a[0] = 'a'
 # a = ['aa', 'bb']
-# # relist(a)
-# # print(a)
+# relist(a)
+# print(a)
 # relist(a[:])
 # print(a)
 
@@ -170,5 +177,5 @@
 # reduce
 from functools import reduce
 
-a = [1, 2, 3, 4, 5]
-print(reduce(lambda x, y: x+y, a))
+# a = [1, 2, 3, 4, 5]
+# print(reduce(lambda x, y: x+y, a))
