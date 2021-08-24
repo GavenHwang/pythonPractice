@@ -1,0 +1,10 @@
+name: demo
+maodian1: &maodian1
+  hobby: !include ./b.yaml # 引用当前目录下yaml文件
+  skill: !include ../c/c.yaml # 引用非当前目录下的yaml文件
+maodiao2: &maodian2
+  aa: 11
+  bb: 22
+haha:
+  <<: *maodian1
+heihei: *maodian2
