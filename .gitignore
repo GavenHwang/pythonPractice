@@ -6,3 +6,4 @@ __pycache__/
 *.manifest
 *.pyc
 *$py.class
+report/*

@@ -1,18 +1,27 @@
 name: demo
 maodian1:
-  hobby: &id001
+  hobby:
   - basketball
   - Table-Tennis
   - swim
-  skill: &id002
+  skill:
   - python
   - java
   - shell
   - linux
-maodiao2: &id003
+maodiao2:
   aa: 11
   bb: 22
 haha:
-  hobby: *id001
-  skill: *id002
-heihei: *id003
+  hobby:
+  - basketball
+  - Table-Tennis
+  - swim
+  skill:
+  - python
+  - java
+  - shell
+  - linux
+heihei:
+  aa: 11
+  bb: 22

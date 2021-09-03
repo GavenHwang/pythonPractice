@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
 import pytest
 
 log = logging.getLogger(__file__)

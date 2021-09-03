@@ -6,7 +6,7 @@ import pytest
 if __name__ == '__main__':
     cwd = Path.cwd()
     # file_name = cwd.joinpath("test_ordering.py")
-    file_name = cwd.joinpath("test_assert.py")
+    # file_name = cwd.joinpath("test_assert.py")
     pytest.main([
         "-vs",
         "--html", "report/report_%s.html" % datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

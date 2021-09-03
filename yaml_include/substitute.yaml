@@ -1,0 +1,12 @@
+user1:
+  username: $user
+  password: $password
+user2:
+  username: user
+  password: password
+user3:
+  username: $.user
+  password: $.password
+validate:
+  - eq: [$.msg, login success!]
+  - eq: [$.code, 0]
