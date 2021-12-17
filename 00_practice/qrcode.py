@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import qrcode
 
 qr = qrcode.QRCode(
     # 设置Version，范围1~40 即21*21 ~ 177*177
