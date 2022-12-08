@@ -24,23 +24,20 @@
 # B().a()
 
 # 斐波那契数列
-# def fun_fibs(num):
-#     """输出斐波那契数列的前num项"""
-#     fibs = [0, 1]
-#     if num == 1:
-#         print([0])
-#         return
-#     elif num ==2:
-#         print([0, 1])
-#         return
-#     else:
-#         for i in range(num - 2):
-#             fibs.append(fibs[-2] + fibs[-1])
-#     print(fibs)
-#
-#
-# fun_fibs(5)
+def fun_fibs(num):
+    """输出斐波那契数列的前num项"""
+    fibs = [0, 1]
+    if num == 1:
+        return [0]
+    elif num ==2:
+        return [0, 1]
+    else:
+        for i in range(num - 2):
+            fibs.append(fibs[-2] + fibs[-1])
+        return fibs
 
+
+print(fun_fibs(3))
 
 # 判断是否可调用
 # import math

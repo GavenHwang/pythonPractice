@@ -1,0 +1,12 @@
+{
+  "test_assert.py::test_assume": true,
+  "test_assert.py::test_f1": true,
+  "test_assert.py::test_function": true,
+  "test_fixture4.py::test_eval[2+4-6]": true,
+  "test_fixture4.py::test_eval[6*9-42]": true,
+  "test_parametrize.py::test_eval[33]": true,
+  "test_parametrize.py::test_eval[6*9-42]": true,
+  "test_parametrize.py::test_eval[\\u4e09]": true,
+  "test_parametrize.py::test_eval[cc]": true,
+  "test_parametrize.py::test_eval[\u4e09]": true
+}
