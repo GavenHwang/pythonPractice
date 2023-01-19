@@ -23,8 +23,24 @@ def getMonthFirstDayAndLastDay(year=None, month=None):
     lastDay = datetime.date(year=year, month=month, day=monthRange)
     print(firstDay, lastDay)
 
+def print_daily_work_date(year=datetime.date.today().year, month=datetime.date.today().month):
+    firstDayWeekDay, monthRange = calendar.monthrange(year, month)
+    weekdir = {
+        0: "周一",
+        1: "周二",
+        2: "周三",
+        3: "周四",
+        4: "周五",
+        5: "周六",
+        6: "周日",
+    }
+    for i in range(1, monthRange):
+        t = datetime.date(year=year, month=month, day=i)
+        print(t, weekdir.get(t.weekday()))
+
 
 if __name__ == '__main__':
-    s = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H:%M:%S")
-    print(s)
-    getMonthFirstDayAndLastDay()
+    # s = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H:%M:%S")
+    # print(s)
+    # getMonthFirstDayAndLastDay()
+    print_daily_work_date()
