@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from pathlib import Path
 
 
@@ -30,3 +31,7 @@ print(pathlib_join_path)
 # 将test.txt 重命名为 project/tests.txt
 # os.rename('test.txt', os.PathPractice.join('project', 'tests.txt'))
 # Path('test.txt').rename('project/test.txt')
+
+# 删除目录
+if os.path.isdir("./__pycache__"):
+    shutil.rmtree("./__pycache__", ignore_errors=True)
