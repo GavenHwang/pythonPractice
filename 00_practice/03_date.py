@@ -3,29 +3,20 @@ import calendar
 import datetime
 
 
-# 获取月份第一天和最后一天
-def getMonthFirstDayAndLastDay(year=None, month=None):
-    if year:
-        year = int(year)
-    else:
-        year = datetime.date.today().year
-
-    if month:
-        month = int(month)
-    else:
-        month = datetime.date.today().month
-
+def get_month_first_day_and_last_day(year=datetime.date.today().year, month=datetime.date.today().month):
+    """获取月份第一天和最后一天"""
+    year, month = int(year), int(month)
     # 获取当月第一天的星期和当月的总天数
-    firstDayWeekDay, monthRange = calendar.monthrange(year, month)
-
+    first_day_week_day, month_range = calendar.monthrange(year, month)
     # 获取当月的第一天
-    firstDay = datetime.date(year=year, month=month, day=1)
-    lastDay = datetime.date(year=year, month=month, day=monthRange)
-    print(firstDay, lastDay)
+    first_day = datetime.date(year=year, month=month, day=1)
+    last_day = datetime.date(year=year, month=month, day=month_range)
+    print(first_day, last_day)
+
 
 def print_daily_work_date(year=datetime.date.today().year, month=datetime.date.today().month):
-    firstDayWeekDay, monthRange = calendar.monthrange(year, month)
-    weekdir = {
+    first_day_week_day, month_range = calendar.monthrange(year, month)
+    week_dir = {
         0: "周一",
         1: "周二",
         2: "周三",
@@ -34,13 +25,15 @@ def print_daily_work_date(year=datetime.date.today().year, month=datetime.date.t
         5: "周六",
         6: "周日",
     }
-    for i in range(1, monthRange):
+    for i in range(1, month_range):
         t = datetime.date(year=year, month=month, day=i)
-        print(t, weekdir.get(t.weekday()))
+        print(t, week_dir.get(t.weekday()))
 
 
 if __name__ == '__main__':
-    # s = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d_%H:%M:%S")
-    # print(s)
-    # getMonthFirstDayAndLastDay()
+    now = datetime.datetime.now()
+    print(datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%S"))
+    print(datetime.datetime.strftime(now.replace(hour=now.hour + 1, minute=0, second=0, microsecond=0),
+                                     "%Y-%m-%d %H:%M:%S"))
+    get_month_first_day_and_last_day()
     print_daily_work_date()

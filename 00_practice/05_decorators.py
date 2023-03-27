@@ -16,10 +16,10 @@ def useful(a, b):
 
 
 # 带参数的注解
-def attrs(**kwds):
+def attrs(**kwargs):
     def decorate(f):
-        for k in kwds:
-            setattr(f, k, kwds[k])
+        for k in kwargs:
+            setattr(f, k, kwargs[k])
         return f
     return decorate
 
