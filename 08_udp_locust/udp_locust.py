@@ -80,6 +80,6 @@ class UDPLocust(User):
 
 
 if __name__ == "__main__":
-    environment = Environment()
+    environment = Environment(locustfile="./udp_locust.py")
     udp_send = UDPLocust(environment)
     udp_send.run()
