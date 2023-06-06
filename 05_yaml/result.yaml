@@ -1,0 +1,11 @@
+my_bool_false: False
+my_bool_true: True
+my_int: 10
+my_str: abc
+my_list:
+  - 1
+  - a
+my_dict:
+  name: tom
+  age: 18
+  is_adult: True

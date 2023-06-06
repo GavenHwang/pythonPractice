@@ -1,0 +1,10 @@
+大家好！
+    根据《软件系统测试准入准出标准》http://wiki.sugon.com/pages/viewpage.action?pageId=49087004
+    AC-OPENAPI-2.5.1-277版本，经过验证，测试结论为准出。
+    准出版本号:AC-OPENAPI-2.5.1-277
+一、测试结果与报告
+    AC OpenAPI接口执行结果：http://10.0.35.79:8080/jenkins/job/test_openapi_suites/539/allure/
+二、升级步骤
+    替换openapi.war包
+三、升级内容
+    BUG：http://hpczentao.sugon.com/bug-view-45144.html
