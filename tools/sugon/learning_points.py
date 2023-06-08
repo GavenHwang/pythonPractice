@@ -99,7 +99,17 @@ class LearningPoints:
         ).json()
         return res_json.get("msg")
 
+    def get_by_login_itcode(self):
+        res_json = request(
+            method="GET",
+            url=self.host + "/api/system/user/getByLoginItcode",
+            headers=self.headers
+        ).json()
+        return res_json.get("subi")
+
     def acquire_points(self):
+        shubi_before = self.get_by_login_itcode()
+        print("您当前拥有%s个曙币!" % shubi_before)
         page_list = learning_points.page_list()
         page_list.reverse()
         result1 = result2 = result3 = None
@@ -123,7 +133,8 @@ class LearningPoints:
                     print('点赞"%s"' % course_name, result3)
             if result1 and result2 and result3:
                 break
-
+        shubi_now = self.get_by_login_itcode()
+        print("您现在拥有%s个曙币!" % shubi_now)
 
 if __name__ == '__main__':
     username = input("请输入用户名：")
