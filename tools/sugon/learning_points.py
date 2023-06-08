@@ -25,7 +25,7 @@ class LearningPoints:
         return page_list
 
     def save_course(self, course_id, course_name):
-        """匿名评论：赞"""
+        """匿名评论课程：赞"""
         res_json = request(
             method="POST",
             url=self.host + "/api/course/comment/saveCourse",
@@ -37,22 +37,21 @@ class LearningPoints:
         return res_json.get("msg")
 
     def save_like(self, course_id, course_name):
-        """对用户评论点赞"""
-        # 获取评论
-        comment = request(
+        """点赞课程，先取消点赞，再重新点赞"""
+        unlike = request(
             method="POST",
-            url=self.host + "/api/course/comment/pageList",
-            json={"pageNum": 1, "pageSize": 999999999, "thirdId": course_id, "type": "FORUM"},
-            headers=self.headers
-        ).json().get("data", {}).get("records", [])[0]
-        # 点赞评论
-        res_json = request(
-            method="POST",
-            url=self.host + "/api/course/userscore/saveLike",
-            json={"score": 1, "thirdPartId": comment["id"], "thirdPartName": course_name, "typeCode": "LIKE"},
+            url=self.host + "/api/course/userscore/saveUnLike",
+            json={"score": 1, "thirdPartId": course_id, "thirdPartName": course_name, "typeCode": "LIKE"},
             headers=self.headers
         ).json()
-        return res_json.get("msg")
+        unlike_msg = unlike.get("msg")
+        like = request(
+            method="POST",
+            url=self.host + "/api/course/userscore/saveLike",
+            json={"score": 1, "thirdPartId": course_id, "thirdPartName": course_name, "typeCode": "LIKE"},
+            headers=self.headers
+        ).json()
+        return like.get("msg")
 
     def learn_state(self, course_id):
         res_json = request(
