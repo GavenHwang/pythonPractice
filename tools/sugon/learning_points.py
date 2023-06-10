@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import maskpass
 from requests import request
+from time import sleep
 
 
 class LearningPoints:
@@ -128,6 +129,8 @@ class LearningPoints:
                 if result2 is None:
                     result2 = self.save_course(course_id, course_name)
                     print('评论"%s"课程' % course_name, result2)
+                print("等待5秒，操作太快，不给曙币！")
+                sleep(5)
                 if result3 is None:
                     result3 = self.save_like(course_id, course_name)
                     print('点赞"%s"' % course_name, result3)
@@ -135,6 +138,7 @@ class LearningPoints:
                 break
         shubi_now = self.get_by_login_itcode()
         print("您现在拥有%s个曙币!" % shubi_now)
+
 
 if __name__ == '__main__':
     username = input("请输入用户名：")
