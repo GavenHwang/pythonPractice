@@ -125,15 +125,20 @@ class LearningPoints:
                 if result1 is None:
                     result1 = self.save_course_score(course_id, course_name)
                     print('评分"%s"课程' % course_name, result1)
+                    if not result1 or not result2 or not result3:
+                        sleep(5)
             if course_name == "对私报销培训":
                 if result2 is None:
                     result2 = self.save_course(course_id, course_name)
                     print('评论"%s"课程' % course_name, result2)
-                print("等待5秒，操作太快，不给曙币！")
-                sleep(5)
+                    if not result1 or not result2 or not result3:
+                        print("等待5秒，操作太快，不给曙币！")
+                        sleep(5)
                 if result3 is None:
                     result3 = self.save_like(course_id, course_name)
                     print('点赞"%s"' % course_name, result3)
+                    if not result1 or not result2 or not result3:
+                        sleep(5)
             if result1 and result2 and result3:
                 break
         shubi_now = self.get_by_login_itcode()
