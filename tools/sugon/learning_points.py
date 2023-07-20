@@ -1,7 +1,20 @@
 # -*- coding:utf-8 -*-
+import os
+from datetime import datetime
 import maskpass
+from loguru import logger
 from requests import request
 from time import sleep
+
+
+def set_logger():
+    t = datetime.strftime(datetime.now(), "%Y%m%d")
+    LOG_PATH = os.path.join(os.path.dirname(__file__), "learning_points%s.log" % t)
+    logger.add(LOG_PATH, level="DEBUG", rotation="10MB", retention="10 days", encoding="utf-8", enqueue=True,
+               backtrace=True, diagnose=True)
+
+
+set_logger()
 
 
 class LearningPoints:
@@ -110,7 +123,7 @@ class LearningPoints:
 
     def acquire_points(self):
         shubi_before = self.get_by_login_itcode()
-        print("您当前拥有%s个曙币!" % shubi_before)
+        logger.info("您当前拥有%s个曙币!" % shubi_before)
         page_list = learning_points.page_list()
         page_list.reverse()
         result1 = result2 = result3 = None
@@ -121,30 +134,30 @@ class LearningPoints:
             if already_score is not True:
                 if learn_state == 0:
                     result = self.add_learn(course_id)
-                    print('添加"%s"课程' % course_name, result)
+                    logger.info('添加"%s"课程' % course_name, result)
                 if result1 is None:
                     result1 = self.save_course_score(course_id, course_name)
-                    print('评分"%s"课程' % course_name, result1)
+                    logger.info('评分"%s"课程' % course_name, result1)
                     if not result1 or not result2 or not result3:
-                        print("等待5秒，操作太快，不给币！")
+                        logger.info("等待5秒，操作太快，不给币！")
                         sleep(5)
             if course_name == "对私报销培训":
                 if result2 is None:
                     result2 = self.save_course(course_id, course_name)
-                    print('评论"%s"课程' % course_name, result2)
+                    logger.info('评论"%s"课程' % course_name, result2)
                     if not result1 or not result2 or not result3:
-                        print("等待5秒，操作太快，不给币！")
+                        logger.info("等待5秒，操作太快，不给币！")
                         sleep(5)
                 if result3 is None:
                     result3 = self.save_like(course_id, course_name)
-                    print('点赞"%s"' % course_name, result3)
+                    logger.info('点赞"%s"' % course_name, result3)
                     if not result1 or not result2 or not result3:
-                        print("等待5秒，操作太快，不给币！")
+                        logger.info("等待5秒，操作太快，不给币！")
                         sleep(5)
             if result1 and result2 and result3:
                 break
         shubi_now = self.get_by_login_itcode()
-        print("您现在拥有%s个曙币!" % shubi_now)
+        logger.info("您现在拥有%s个曙币!" % shubi_now)
 
 
 if __name__ == '__main__':
