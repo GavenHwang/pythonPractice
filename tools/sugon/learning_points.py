@@ -131,7 +131,8 @@ class LearningPoints:
             course_id, course_name = course["id"], course["courseName"]
             learn_state = learning_points.learn_state(course_id)
             already_score = learning_points.already_score(course_id)
-            if already_score is not True:
+            # 评分课程得1分
+            if result1 is None and already_score is not True:
                 if learn_state == 0:
                     result = self.add_learn(course_id)
                     logger.info('添加"%s"课程' % course_name, result)
@@ -139,21 +140,22 @@ class LearningPoints:
                     result1 = self.save_course_score(course_id, course_name)
                     logger.info('评分"%s"课程' % course_name, result1)
                     if not result1 or not result2 or not result3:
-                        logger.info("等待5秒，操作太快，不给币！")
-                        sleep(5)
-            if course_name == "对私报销培训":
-                if result2 is None:
-                    result2 = self.save_course(course_id, course_name)
-                    logger.info('评论"%s"课程' % course_name, result2)
-                    if not result1 or not result2 or not result3:
-                        logger.info("等待5秒，操作太快，不给币！")
-                        sleep(5)
-                if result3 is None:
-                    result3 = self.save_like(course_id, course_name)
-                    logger.info('点赞"%s"' % course_name, result3)
-                    if not result1 or not result2 or not result3:
-                        logger.info("等待5秒，操作太快，不给币！")
-                        sleep(5)
+                        logger.info("等待30秒，操作太快，不给币！")
+                        sleep(30)
+            # 评论课程得1分
+            if result2 is None:
+                result2 = self.save_course(course_id, course_name)
+                logger.info('评论"%s"课程' % course_name, result2)
+                if not result1 or not result2 or not result3:
+                    logger.info("等待30秒，操作太快，不给币！")
+                    sleep(30)
+            # 点赞课程的1分
+            if result3 is None:
+                result3 = self.save_like(course_id, course_name)
+                logger.info('点赞"%s"' % course_name, result3)
+                if not result1 or not result2 or not result3:
+                    logger.info("等待30秒，操作太快，不给币！")
+                    sleep(30)
             if result1 and result2 and result3:
                 break
         shubi_now = self.get_by_login_itcode()

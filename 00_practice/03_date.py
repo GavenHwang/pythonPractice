@@ -25,7 +25,7 @@ def print_daily_work_date(year=datetime.date.today().year, month=datetime.date.t
         5: "周六",
         6: "周日",
     }
-    for i in range(1, month_range):
+    for i in range(1, month_range + 1):
         t = datetime.date(year=year, month=month, day=i)
         print(t, week_dir.get(t.weekday()))
 

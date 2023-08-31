@@ -8,6 +8,8 @@ urllib3.disable_warnings()
 project_names = [
     'sacp4.x',
     'ac-ui',
+    'easyop',
+    'sso',
     'acx-bizanalysis',
     'acx-resource',
     'acx-fund',
@@ -28,8 +30,12 @@ project_names = [
 def get_version(host, project_name):
     if project_name.startswith("sacp"):
         path = "/ac/version.html"
+    elif project_name == 'easyop':
+        path = "/itos/version.html"
+    elif project_name == 'sso':
+        path = "/sso/version.html"
     elif project_name == 'ac-openapi':
-        path = "/ac/openapi/version"
+        path = "/ac/openapi/version.html"
     elif project_name == 'ac-ui':
         path = "/ac/console3/version.html"
     else:
@@ -38,8 +44,8 @@ def get_version(host, project_name):
     version = (res.text if res.status_code == 200 else project_name).replace("\n", "").lower().replace("snapshot-", "")
     if project_name.startswith("sacp"):
         version = version.replace("ac-", "")
-    if project_name == 'ac-openapi':
-        version = project_name + '-' + json.loads(version).get("version")
+    # if project_name == 'ac-openapi':
+    #     version = project_name + '-' + json.loads(version).get("version")
     if not version.startswith(project_name):
         version = project_name + "-" + version
     return version
@@ -47,6 +53,7 @@ def get_version(host, project_name):
 
 def get_versions(host):
     versions = []
+    print("-------------------- %s 环境版本信息如下：--------------------" % host)
     for p in project_names:
         v = get_version(host, p)
         versions.append(v)
@@ -69,8 +76,10 @@ def diff_version(host1, host2):
 
 
 if __name__ == "__main__":
-    host1 = "https://ac.sugon.com"
-    host2 = "http://10.0.35.233"
-    # get_versions(host1)
+    host1 = "https://nscc.v.zzu.edu.cn"
+    # host1 = "http://10.0.35.233"
+    # host1 = "https://itos.sugon.com"
+    # host2 = "https://ac.sugon.com"
+    get_versions(host1)
     # get_versions(host2)
-    diff_version(host1, host2)
+    # diff_version(host1, host2)
