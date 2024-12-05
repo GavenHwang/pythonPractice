@@ -1,0 +1,251 @@
+pipeline {
+
+    agent {
+        node {
+            label 'master'
+        }
+    }
+
+    parameters {
+        choice(
+            name: 'choose_env',
+            choices: ['itos', 'itos2', '233', 'xhnet', "template"],
+            description: '选择构建环境（必填参数）'
+        )
+    text(
+        name: 'extended_parameters',
+        description: '''扩展参数（作用：自定义配置文件，choose_env选择template时必填）：
+host_ip: 访问地址，必填
+area_name: 区域名称，必填
+sa_password: sa账户密码，默认sa@123itos
+db_ip: 数据库ip，默认使用host_ip
+db_password: 数据库密码，默认root23''',
+    )
+
+
+//         activeChoiceHtml(
+//             name: 'extended_parameters',
+//             referencedParameters: 'choose_env',
+//             choiceType: 'ET_FORMATTED_HTML',
+//             omitValueField: false,
+//             randomName: 'choice-parameter-309031452935330',
+//             script: groovyScript(
+//                 fallbackScript: [classpath: [], oldScript: '', sandbox: false, script: ''],
+//                 script: [
+//                     classpath: [],
+//                     oldScript: '',
+//                     sandbox: true,
+//                     script: '''
+//                         if (choose_env.equals("template")) {
+//                             return """
+//                                 <div class="jenkins-form-item tr ">
+//                                     <div class="jenkins-form-description">
+//                                         扩展参数（作用：自定义配置文件）：<br>
+//                                         host_ip: 访问地址，必填<br>
+//                                         area_name: 区域名称，必填<br>
+//                                         sa_password: sa账户密码，默认sa@123itos<br>
+//                                         db_ip: 数据库ip，默认使用host_ip<br>
+//                                         db_password: 数据库密码，默认root23<br>
+//                                     </div>
+//                                     <div class="setting-main">
+//                                         <div name="parameter">
+//                                             <input name="name" type="hidden" value="extended_parameters">
+//                                             <textarea name="value" rows="5" class="jenkins-input   "></textarea>
+//                                         </div>
+//                                     </div>
+//                                     <div class="validation-error-area"></div>
+//                                 </div>
+//                             """
+//                         } else {}
+//                     '''
+//                 ]
+//             )
+//         )
+        gitParameter(
+            name: 'branch',
+            type: 'branch',
+            defaultValue: 'origin/master',
+            description: '选择分支',
+            useRepository: 'git@gitlab.hpc.sugon.com:hpc_test/e2e.git',
+            quickFilterEnabled: true,
+            selectedValue: 'DEFAULT',
+            listSize: '5'
+        )
+        string(
+            name: 'feishu_api',
+            description: '增量接口列表飞书云文档链接（增量单接口构建项的必填参数）'
+        )
+        string(
+            name: 'feishu_url',
+            description: '增量页面列表飞书云文档链接（增量页面检查构建项的必填参数）'
+        )
+        extendedChoice(
+            name: 'jobs_to_run',
+            value: 'sacp_fn_test,sacp_project_api_test,sacp_api_test,sacp_project_url_check,sacp_url_check',
+            defaultValue: 'sacp_fn_test,sacp_project_api_test,sacp_api_test,sacp_project_url_check,sacp_url_check',
+            description: '选择测试项（按住ctrl键进行多选）',
+            descriptionPropertyValue: '黄金流程,增量单接口,全量单接口,增量页面检查,全量页面检查',
+            multiSelectDelimiter: ',',
+            quoteValue: false,
+            saveJSONParameterToFile: false,
+            type: 'PT_MULTI_SELECT',
+            visibleItemCount: 5
+        )
+        extendedChoice(
+            name: 'to_users',
+            description: '给那儿些用户发送飞书通知（按住ctrl键进行多选）',
+            propertyFile: '/root/.jenkins/build_params.properties',
+            propertyKey: 'phoneNumbers',
+            defaultPropertyFile: '/root/.jenkins/build_params.properties',
+            defaultPropertyKey: 'phoneNumbers',
+            descriptionPropertyFile: '/root/.jenkins/build_params.properties',
+            descriptionPropertyKey: 'userNames',
+            multiSelectDelimiter: ',',
+            quoteValue: false,
+            saveJSONParameterToFile: false,
+            type: 'PT_MULTI_SELECT',
+            visibleItemCount: 10
+        )
+
+    }
+
+	stages{
+	    stage('拉取代码') {
+	        // 设置显示标题
+	        post {
+                always {
+                    script {
+                        def jobMapping = [
+                            'sacp_fn_test': '黄金流程',
+                            'sacp_project_api_test': '增量单接口',
+                            'sacp_api_test': '全量单接口',
+                            'sacp_project_url_check': '增量页面检查',
+                            'sacp_url_check': '全量页面检查',
+                        ]
+                        def jobsArray = "${params.jobs_to_run}".split(',')
+                        def jobsMappings = []
+                        jobsArray.each { input ->
+                            if (jobMapping.containsKey(input)) {
+                                jobsMappings << jobMapping[input]
+                            }
+                        }
+
+                        def buildUser = 'timer or trigger'
+                        def buildCauses = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+                        if (buildCauses) {
+                            buildUser = buildCauses.first().userId
+                        }
+                        currentBuild.displayName = "#${BUILD_NUMBER} - ${buildUser}"
+                        currentBuild.description = "构建分支：${params.branch}\n构建环境：${params.choose_env}\n构建项目：${jobsMappings.join(', ')}"
+                    }
+                }
+            }
+            steps {
+                git credentialsId: '454ccc10-f2e0-461b-8be8-0948fbee311d', url: 'git@gitlab.hpc.sugon.com:hpc_test/e2e.git'
+            }
+        }
+
+        stage('黄金流程') {
+		    when {
+		        expression {
+		            return ('sacp_fn_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		        }
+		    }
+            steps {
+                script {
+                    def jobName = "SACP功能测试"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'choose_env', value: "${params.choose_env}"),
+                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'choose_file', value: "sacp_gold_process.yaml"),
+                        string(name: 'hook', value: "init_user"),
+                        string(name: 'to_users', value: "${params.to_users}"),
+                    ]
+                }
+            }
+        }
+
+        stage('增量单接口') {
+            when {
+		       expression {
+		           return ('sacp_project_api_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		       }
+		   }
+            steps {
+                script {
+                    def jobName = "SACP单接口测试"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'choose_env', value: "${params.choose_env}"),
+                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'feishu_xlsx_file_url', value:"${params.feishu_api}"),
+                        string(name: 'to_users', value: "${params.to_users}"),
+                    ]
+                }
+            }
+        }
+
+        stage('全量单接口') {
+            when {
+		        expression {
+		            return ('sacp_api_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		        }
+		    }
+            steps {
+                script {
+                    def jobName = "SACP单接口测试"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'choose_env', value: "${params.choose_env}"),
+                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'to_users', value: "${params.to_users}"),
+                    ]
+                }
+            }
+        }
+
+        stage('增量页面检查') {
+		    when {
+		        expression {
+		            return ('sacp_url_check' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		        }
+		    }
+            steps {
+                script {
+                    def jobName = "SACP页面检查"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'choose_env', value: "${params.choose_env}"),
+                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'feishu_xlsx_file_url', value:"${params.feishu_url}"),
+                        string(name: 'select_sheet_names', value: "6.x官网,6.x帮助文档,6.x控制台"),
+                        string(name: 'to_users', value: "${params.to_users}"),
+                        string(name: 'hook', value: "init_user"),
+                    ]
+                }
+            }
+        }
+
+        stage('全量页面检查') {
+		    when {
+		        expression {
+		            return ('sacp_url_check' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		        }
+		    }
+            steps {
+                script {
+                    def jobName = "SACP页面检查"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'choose_env', value: "${params.choose_env}"),
+                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'select_sheet_names', value: "6.x官网,6.x帮助文档,6.x控制台"),
+                        string(name: 'to_users', value: "${params.to_users}"),
+                        string(name: 'hook', value: "init_user"),
+                    ]
+                }
+            }
+        }
+	}
+}
