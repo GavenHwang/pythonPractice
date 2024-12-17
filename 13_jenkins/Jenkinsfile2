@@ -71,20 +71,12 @@ db_password: 数据库密码，默认root23''',
             selectedValue: 'DEFAULT',
             listSize: '5'
         )
-        string(
-            name: 'all_build_num',
-            description: '（增量单接口，必填参数）ac-all-build任务的构建号：http://10.0.35.17:8090/jenkins/job/ac-all-build/'
-        )
-        string(
-            name: 'feishu_url',
-            description: '（增量页面检查，必填参数）增量页面列表飞书云文档链接地址，模板：https://sugon-hpc.feishu.cn/sheets/I7aMsYgqFhRQWatQRefc1LannZe?sheet=2qVDGh'
-        )
         extendedChoice(
             name: 'jobs_to_run',
-            value: 'sacp_fn_test,sacp_project_api_test,sacp_api_test,sacp_project_url_check,sacp_url_check',
-            defaultValue: 'sacp_fn_test,sacp_api_test,sacp_url_check',
+            value: 'sacp_fn_test,sacp_api_test,sacp_url_check,sacp_openapi_test',
+            defaultValue: 'sacp_fn_test,sacp_api_test,sacp_url_check,sacp_openapi_test',
             description: '选择测试项（按住ctrl键进行多选）',
-            descriptionPropertyValue: '黄金流程,增量单接口,全量单接口,增量页面检查,全量页面检查',
+            descriptionPropertyValue: '功能测试,全量单接口,全量页面检查,OpenAPI接口测试',
             multiSelectDelimiter: ',',
             quoteValue: false,
             saveJSONParameterToFile: false,
@@ -116,11 +108,10 @@ db_password: 数据库密码，默认root23''',
                 always {
                     script {
                         def jobMapping = [
-                            'sacp_fn_test': '黄金流程',
-                            'sacp_project_api_test': '增量单接口',
+                            'sacp_fn_test': '功能测试',
                             'sacp_api_test': '全量单接口',
-                            'sacp_project_url_check': '增量页面检查',
                             'sacp_url_check': '全量页面检查',
+                            'sacp_openapi_test': 'OpenAPI接口测试',
                         ]
                         def jobsArray = "${params.jobs_to_run}".split(',')
                         def jobsMappings = []
@@ -145,7 +136,7 @@ db_password: 数据库密码，默认root23''',
             }
         }
 
-        stage('黄金流程') {
+        stage('功能测试') {
 		    when {
 		        expression {
 		            return ('sacp_fn_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
@@ -160,26 +151,6 @@ db_password: 数据库密码，默认root23''',
                         string(name: 'branch', value: "${params.branch}"),
                         string(name: 'choose_file', value: "sacp_gold_process.yaml"),
                         string(name: 'hook', value: "init_user"),
-                        string(name: 'to_users', value: "${params.to_users}"),
-                    ]
-                }
-            }
-        }
-
-        stage('增量单接口') {
-            when {
-		       expression {
-		           return ('sacp_project_api_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
-		       }
-		   }
-            steps {
-                script {
-                    def jobName = "SACP单接口测试"
-                    def job = build job: jobName, propagate: false, wait: true, parameters:[
-                        string(name: 'choose_env', value: "${params.choose_env}"),
-                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
-                        string(name: 'branch', value: "${params.branch}"),
-                        string(name: 'all_build_num', value:"${params.all_build_num}"),
                         string(name: 'to_users', value: "${params.to_users}"),
                     ]
                 }
@@ -205,28 +176,6 @@ db_password: 数据库密码，默认root23''',
             }
         }
 
-        stage('增量页面检查') {
-		    when {
-		        expression {
-		            return ('sacp_url_check' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
-		        }
-		    }
-            steps {
-                script {
-                    def jobName = "SACP页面检查"
-                    def job = build job: jobName, propagate: false, wait: true, parameters:[
-                        string(name: 'choose_env', value: "${params.choose_env}"),
-                        string(name: 'extended_parameters', value:"${params.extended_parameters}"),
-                        string(name: 'branch', value: "${params.branch}"),
-                        string(name: 'feishu_xlsx_file_url', value:"${params.feishu_url}"),
-                        string(name: 'select_sheet_names', value: "6.x官网,6.x帮助文档,6.x控制台"),
-                        string(name: 'to_users', value: "${params.to_users}"),
-                        string(name: 'hook', value: "init_user"),
-                    ]
-                }
-            }
-        }
-
         stage('全量页面检查') {
 		    when {
 		        expression {
@@ -243,6 +192,26 @@ db_password: 数据库密码，默认root23''',
                         string(name: 'select_sheet_names', value: "6.x官网,6.x帮助文档,6.x控制台"),
                         string(name: 'to_users', value: "${params.to_users}"),
                         string(name: 'hook', value: "init_user"),
+                    ]
+                }
+            }
+        }
+
+        stage('OpenAPI接口测试') {
+		    when {
+		        expression {
+		            return ('sacp_openapi_test' in "${params.jobs_to_run}".split(",") && "${params.choose_env}" != "scnet" && "${params.choose_env}" != "scnet-demo")
+		        }
+		    }
+            steps {
+                script {
+                    def jobName = "test_openapi_suites"
+                    def job = build job: jobName, propagate: false, wait: true, parameters:[
+                        string(name: 'branch', value: "${params.branch}"),
+                        string(name: 'config', value: "${params.choose_env}"),
+                        string(name: 'TEST_SUITE', value: "ac-openapi"),
+                        string(name: 'functions_match_rule', value: "test_*_01"),
+                        string(name: 'to_users', value: "${params.to_users}"),
                     ]
                 }
             }
