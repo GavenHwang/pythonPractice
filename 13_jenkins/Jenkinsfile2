@@ -149,7 +149,7 @@ db_password: 数据库密码，默认root23''',
                         string(name: 'choose_env', value: "${params.choose_env}"),
                         string(name: 'extended_parameters', value:"${params.extended_parameters}"),
                         string(name: 'branch', value: "${params.branch}"),
-                        string(name: 'choose_file', value: "sacp_gold_process.yaml"),
+                        string(name: 'choose_file', value: "daily_test.yaml"),
                         string(name: 'hook', value: "init_user"),
                         string(name: 'to_users', value: "${params.to_users}"),
                     ]
