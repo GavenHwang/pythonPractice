@@ -1,12 +1,12 @@
 sqls = [
-    'sacp-acx_cu_role.sql',
-    'sacp-ac_cu_authority.sql',
-    'sacp-acx_cu_role_authority.sql',
-    'sacp-acx_retailer_role.sql',
-    'sacp-acx_retailer_authority.sql',
-    'sacp-acx_retailer_role_authority.sql',
-    'sacp-ac_cu_role_privilege.sql',
-    'sacp-ac_cu_route_api_relation.sql',
+    'acx_cu_role.sql',
+    'ac_cu_authority.sql',
+    'acx_cu_role_authority.sql',
+    'acx_retailer_role.sql',
+    'acx_retailer_authority.sql',
+    'acx_retailer_role_authority.sql',
+    'ac_cu_role_privilege.sql',
+    'ac_cu_route_api_relation.sql',
 ]
 sql_s = '''
 TRUNCATE table acx_cu_role;
