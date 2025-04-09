@@ -1,5 +1,6 @@
 # My own ignore files
 02_pytest_practice/report/*
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
