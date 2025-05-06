@@ -16,6 +16,7 @@ service_info = [
     ('seller-ui', '2', '/ui/seller', '1'),
     ('chatbot-ui', '2', '/ui/chatbot', '1'),
     ('llm-ui', '2', '/ui/llm', '1'),
+    ('ac-openapi', '2', '/ac/openapi', '1'),
     ('acx-aihub', '1', '', '1'),
     ('acx-aimgt', '1', '', '1'),
     ('acx-appcenter', '1', '', '1'),

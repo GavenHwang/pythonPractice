@@ -68,16 +68,16 @@ def my_post_execution(*args, **kwargs):
 
 # 使用装饰器
 @post_execution_decorator(my_post_execution)
-def my_method(a, b):
+def my_method(a, b, c=0):
     print(f"执行主方法: a={a}, b={b}")
-    return a + b
+    print(a + b + c)
 
 
 if __name__ == '__main__':
-    useful(2, 3)
-    mymethod("你好")
-    A().b()
-    B().b()
+    # useful(2, 3)
+    # mymethod("你好")
+    # A().b()
+    # B().b()
     # 调用方法
-    result = my_method(3, 4)
-    print(f"主方法返回值: {result}")
+    result = my_method(3, 4, c=3)
+    # print(f"主方法返回值: {result}")
