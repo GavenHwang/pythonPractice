@@ -67,6 +67,7 @@ service_info = [
     ('acx-platform', '1', '', '2'),
     ('acx-storagemgt', '1', '', '2'),
     ('acx-useragent', '1', '', '2'),
+    ('acx-clustermgt', '1', '', '2'),
     # 部署在集群端给平台端使用的组件
     ('acx-repoagent', '1', '', '3'),
     ('repo-efile', '1', '', '3'),
@@ -85,7 +86,7 @@ def insert_service_info():
         print(f"{truncate_sql} 执行成功")
         conn.commit()
         # 插入数据
-        index = 10000
+        index = 20000
         for i in service_info:
             insert_sql = f"""INSERT INTO `ac_diff`.`service_info` (`id`, `service_name`, `service_type`, `extra_path`, `platform_type`) VALUES ({index}, '{i[0]}', '{i[1]}', '{i[2]}', '{i[3]}')"""
             cursor.execute(insert_sql)
