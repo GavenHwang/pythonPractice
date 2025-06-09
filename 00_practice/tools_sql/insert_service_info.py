@@ -46,6 +46,7 @@ service_info = [
     ('acx-wechat', '1', '', '1'),
     ('acx-chatbot', '1', '', '1'),
     ('acx-llm', '1', '', '1'),
+    ('acx-clusterop', '1', '', '1'),
     # 集群端
     ('gv', '2', '/login/getVersion.action', '2'),
     ('efile', '1', '', '2'),
