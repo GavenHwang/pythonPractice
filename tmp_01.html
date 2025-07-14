@@ -1,0 +1,38 @@
+<!-- 子组件ChildComponent.vue -->
+<template>
+  <div>
+    <button @click="sendDataToParent">Send Data</button>
+  </div>
+</template>
+
+<script>
+  export default {
+    methods: {
+      sendDataToParent() {
+        this.$emit('child-event', 'Data from child');
+      }
+    }
+  }
+</script>
+
+<!-- 父组件 -->
+<template>
+  <div id="parent">
+    <child-component @child-event="handleChildEvent"></child-component>
+  </div>
+</template>
+
+<script>
+  import ChildComponent from './ChildComponent.vue';
+
+  export default {
+    components: {
+      ChildComponent
+    },
+    methods: {
+      handleChildEvent(data) {
+        console.log(data);
+      }
+    }
+  }
+</script>
